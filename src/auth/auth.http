@@ -1,5 +1,17 @@
-### GET request to example server
-POST http://localhost:3000/api/auth/refresh
-authorization: Bearer token
+### Sign up
+POST http://localhost:3000/api/auth/sign-up
+content-type: application/json
 
-###
+{
+  "email": "roko@example.com",
+  "password": "somepassword"
+}
+
+### Sign in
+POST http://localhost:3000/api/auth/sign-in
+content-type: application/json
+
+{
+  "email": "roko@example.com",
+  "password": "somepassword"
+}

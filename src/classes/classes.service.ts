@@ -8,8 +8,13 @@ export class ClassesService {
     return 'This action adds a new class';
   }
 
-  findAll() {
+  findAll(sports?: string[]) {
+    console.log(sports);
     return `This action returns all classes`;
+  }
+
+  apply(id: number, isApplied: boolean) {
+    return `This action applys a user to an #${id} class`;
   }
 
   findOne(id: number) {
