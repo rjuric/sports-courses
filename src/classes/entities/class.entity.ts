@@ -1,8 +1,9 @@
 import { Schedule } from './schedule.entity';
-import { User } from '../../users/entities/user.entity';
 import { DefaultEntity } from '../../util/default.entity';
-import { Column } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
+import { User } from '../../users/entities/user.entity';
 
+@Entity()
 export class Class extends DefaultEntity {
   @Column()
   sport: string;
@@ -10,8 +11,9 @@ export class Class extends DefaultEntity {
   @Column()
   duration: number;
 
-  @Column()
-  weekSchedule: Schedule[];
+  @OneToMany(() => Schedule, (schedule) => schedule.class)
+  schedule: Schedule[];
 
-  students: User[];
+  @ManyToMany(() => User, (user) => user.classes)
+  users: User[];
 }

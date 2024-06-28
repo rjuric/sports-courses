@@ -25,7 +25,7 @@ export class ClassesController {
     return this.classesService.findAll(sports);
   }
 
-  @Post(':id')
+  @Post(':id/apply')
   apply(
     @Param('id', ParseIntPipe) id: number,
     @Body() applyClassDto: ApplyToClassDto,

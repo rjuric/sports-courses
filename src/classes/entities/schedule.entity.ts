@@ -1,9 +1,15 @@
-export class Schedule {
-  id: number;
+import { Column, Entity, ManyToOne } from 'typeorm';
+import { DefaultEntity } from '../../util/default.entity';
+import { Class } from './class.entity';
 
-  dayOfWeek: string;
+@Entity()
+export class Schedule extends DefaultEntity {
+  @Column({ type: 'time' })
+  timeOnly: string;
 
-  hours: number;
+  @Column({ type: 'date' })
+  dateOnly: string;
 
-  minutes: number;
+  @ManyToOne(() => Class, (c) => c.schedule)
+  class: Class;
 }

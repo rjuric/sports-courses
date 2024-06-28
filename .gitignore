@@ -1,6 +1,7 @@
 .env
 docker-compose.yml
 Dockerfile
+/http
 
 # compiled output
 /dist

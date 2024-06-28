@@ -1,0 +1,8 @@
+### GET request to example server
+GET http://localhost:3000/api/classes
+Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTk1ODQyNTQsImV4cCI6MTcxOTU4Nzg1NH0.yNv8iY2Hq4URvi9zu9ucDzjPvk-XRFFVa0ZbdOKziZo"
+
+###
+
+### Apply To Class
+POST http://localhost:3000/api/classes/2

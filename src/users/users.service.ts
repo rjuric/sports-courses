@@ -22,9 +22,24 @@ export class UsersService {
     return await this.repository.findOne({ where: { email } });
   }
 
-  async findByRefreshToken(refreshToken: string) {
+  async findByToken(token: string) {
     return await this.repository.findOne({
-      where: { tokens: { refreshToken } },
+      relations: {
+        tokens: true,
+        classes: true,
+      },
+      where: [
+        {
+          tokens: {
+            accessToken: token,
+          },
+        },
+        {
+          tokens: {
+            refreshToken: token,
+          },
+        },
+      ],
     });
   }
 

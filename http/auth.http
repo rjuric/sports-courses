@@ -1,0 +1,23 @@
+### Sign up
+POST http://localhost:3000/api/auth/sign-up
+content-type: application/json
+
+{
+  "email": "roko9@example.com",
+  "password": "somepassword"
+}
+
+### Sign in
+POST http://localhost:3000/api/auth/sign-in
+content-type: application/json
+
+{
+  "email": "roko7@example.com",
+  "password": "somepassword"
+}
+
+### Refresh
+POST http://localhost:3000/api/auth/refresh
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTk1OTY0NTQsImV4cCI6MTcyMDIwMTI1NH0.qLaQANBXjRpBUgr7FWSH74YfRtCGk_37sxJSNo-2tr4
+
+

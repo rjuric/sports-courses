@@ -1,10 +1,10 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { SignUpDto } from '../users/dto/sign-up.dto';
-import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { ConfigService } from '@nestjs/config';
 
@@ -13,13 +13,16 @@ import { SignInDto } from '../users/dto/sign-in.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Tokens } from './entities/tokens.entity';
 import { Repository } from 'typeorm';
+import { User } from '../users/entities/user.entity';
+import { JwtService } from '../jwt/jwt.service';
+import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
-    private jwtService: JwtService,
     private configService: ConfigService,
+    private readonly jwtService: JwtService,
     @InjectRepository(Tokens)
     private readonly tokensRepository: Repository<Tokens>,
   ) {}
@@ -37,8 +40,7 @@ export class AuthService {
       hashedPassword,
     );
 
-    const tokens = await this.getTokens(newUser.id);
-    newUser.tokens = this.tokensRepository.create(tokens);
+    newUser.tokens = await this.getTokens(newUser.id);
 
     return newUser.save();
   }
@@ -46,7 +48,7 @@ export class AuthService {
   async signIn(signInDto: SignInDto) {
     const user = await this.usersService.findByEmail(signInDto.email);
     if (!user) {
-      throw new BadRequestException('User does not exist.');
+      throw new NotFoundException('User does not exist.');
     }
 
     const isMatch = await bcrypt.compare(signInDto.password, user.password);
@@ -55,11 +57,15 @@ export class AuthService {
       throw new UnauthorizedException('Password is incorrect.');
     }
 
-    const tokens = await this.getTokens(user.id);
-    user.tokens = this.tokensRepository.create(tokens);
+    user.tokens = await this.getTokens(user.id);
     const savedUser = await user.save();
 
     return savedUser.tokens;
+  }
+
+  async refresh(user: User) {
+    user.tokens = await this.getTokens(user.id);
+    return user.save();
   }
 
   private async hash(password: string) {
@@ -69,29 +75,19 @@ export class AuthService {
 
   private async getTokens(userId: number) {
     const [accessToken, refreshToken] = await Promise.all([
-      this.jwtService.signAsync(
-        {
-          sub: userId,
-        },
-        {
-          secret: this.configService.get<string>('jwt.access.secret'),
-          expiresIn: this.configService.get<string>('jwt.access.expiresIn'),
-        },
+      this.jwtService.generate(
+        { userId },
+        this.configService.get<string>('jwt.access.expiresIn')!,
       ),
-      this.jwtService.signAsync(
-        {
-          sub: userId,
-        },
-        {
-          secret: this.configService.get<string>('jwt.refresh.secret'),
-          expiresIn: this.configService.get<string>('jwt.refresh.expiresIn'),
-        },
+      this.jwtService.generate(
+        { userId },
+        this.configService.get<string>('jwt.refresh.expiresIn')!,
       ),
     ]);
 
-    return {
+    return this.tokensRepository.create({
       accessToken,
       refreshToken,
-    };
+    });
   }
 }

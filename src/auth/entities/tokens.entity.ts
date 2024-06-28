@@ -1,4 +1,4 @@
-import { Column, Entity, OneToOne } from 'typeorm';
+import { Column, Entity } from 'typeorm';
 import { DefaultEntity } from '../../util/default.entity';
 
 @Entity()
