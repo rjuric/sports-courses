@@ -1,5 +1,5 @@
 import { Schedule } from './schedule.entity';
-import { DefaultEntity } from '../../util/default.entity';
+import { DefaultEntity } from '../../util/entities/default.entity';
 import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 
@@ -7,6 +7,9 @@ import { User } from '../../users/entities/user.entity';
 export class Class extends DefaultEntity {
   @Column()
   sport: string;
+
+  @Column()
+  description: string;
 
   @Column()
   duration: number;

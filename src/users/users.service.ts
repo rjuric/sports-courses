@@ -10,7 +10,7 @@ export class UsersService {
     @InjectRepository(User) private readonly repository: Repository<User>,
   ) {}
 
-  create(email: string, password: string) {
+  create(email: string, password: string): User {
     return this.repository.create({ email, password });
   }
 

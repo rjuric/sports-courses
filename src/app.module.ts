@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
@@ -7,8 +12,13 @@ import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { configuration } from './config';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { InjectUser } from './users/middleware/inject-user.middleware';
 import { JwtModule } from './jwt/jwt.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { InjectSenderMiddleware } from './users/middlewares/inject-sender.middleware';
+import { User } from './users/entities/user.entity';
+import { Class } from './classes/entities/class.entity';
+import { Schedule } from './classes/entities/schedule.entity';
+import { Tokens } from './auth/entities/tokens.entity';
 
 @Module({
   imports: [
@@ -17,7 +27,7 @@ import { JwtModule } from './jwt/jwt.module';
     AuthModule,
     ConfigModule.forRoot({
       load: [configuration],
-      isGlobal: true, // Makes the ConfigModule globally available
+      isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -36,10 +46,16 @@ import { JwtModule } from './jwt/jwt.module';
     JwtModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ClassSerializerInterceptor,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(InjectUser).forRoutes('/');
+    consumer.apply(InjectSenderMiddleware).forRoutes('/');
   }
 }

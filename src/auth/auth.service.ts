@@ -15,7 +15,6 @@ import { Tokens } from './entities/tokens.entity';
 import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
 import { JwtService } from '../jwt/jwt.service';
-import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class AuthService {
@@ -35,6 +34,7 @@ export class AuthService {
     }
 
     const hashedPassword = await this.hash(createUserDto.password);
+
     const newUser = this.usersService.create(
       createUserDto.email,
       hashedPassword,

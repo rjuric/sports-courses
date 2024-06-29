@@ -5,16 +5,23 @@ import {
   IsNotEmpty,
   IsString,
   Max,
+  MaxLength,
   Min,
+  MinLength,
   ValidateNested,
 } from 'class-validator';
-import { DayOfWeek } from '../../util/day-of-week';
+import { DayOfWeekEnum } from '../../util/enums/day-of-week.enum';
 import { Type } from 'class-transformer';
 
 export class CreateClassDto {
   @IsString()
   @IsNotEmpty()
   sport: string;
+
+  @IsString()
+  @MinLength(20)
+  @MaxLength(80)
+  description: string;
 
   @IsInt()
   @Min(45)
@@ -29,8 +36,8 @@ export class CreateClassDto {
 }
 
 export class CreateClassScheduleDto {
-  @IsEnum(DayOfWeek)
-  day: DayOfWeek;
+  @IsEnum(DayOfWeekEnum)
+  day: DayOfWeekEnum;
 
   @IsString()
   time: string;

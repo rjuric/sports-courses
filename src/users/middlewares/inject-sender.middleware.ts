@@ -1,37 +1,35 @@
 import {
-  ForbiddenException,
   Injectable,
   NestMiddleware,
   UnauthorizedException,
 } from '@nestjs/common';
+import { NextFunction } from 'express';
 import { UsersService } from '../users.service';
-import { NextFunction, Request, Response } from 'express';
 import { JwtService } from '../../jwt/jwt.service';
-import { ConfigService } from '@nestjs/config';
+import { AuthenticatedRequest } from '../../util/interfaces/authenticated-request.interface';
 
 @Injectable()
-export class InjectUser implements NestMiddleware {
+export class InjectSenderMiddleware implements NestMiddleware {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
   ) {}
 
-  async use(req: Request, res: Response, next: NextFunction) {
-    const auth = req.headers.authorization?.split(' ');
+  async use(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    const token = req.headers.authorization?.split(' ').at(1);
 
-    if (!auth) {
+    if (!token) {
       next();
       return;
     }
 
-    const [_, token] = auth;
     const validated = await this.jwtService.validate(token);
     if (!validated) {
       throw new UnauthorizedException();
     }
 
     if (token) {
-      req.body.user = await this.usersService.findByToken(token);
+      req.user = await this.usersService.findByToken(token);
     }
 
     next();

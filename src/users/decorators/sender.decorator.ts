@@ -3,11 +3,11 @@ import {
   ExecutionContext,
   UnauthorizedException,
 } from '@nestjs/common';
-import { User as UserEntity } from '../../users/entities/user.entity';
+import { User } from '../entities/user.entity';
 
 export const Sender = createParamDecorator(
-  (data: unknown, ctx: ExecutionContext) => {
-    const user = ctx.switchToHttp().getRequest().body.user as UserEntity;
+  (data: never, ctx: ExecutionContext) => {
+    const user = ctx.switchToHttp().getRequest().user as User;
 
     if (!user) {
       throw new UnauthorizedException();

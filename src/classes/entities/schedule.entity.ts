@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne } from 'typeorm';
-import { DefaultEntity } from '../../util/default.entity';
+import { DefaultEntity } from '../../util/entities/default.entity';
 import { Class } from './class.entity';
-import { DayOfWeek } from '../../util/day-of-week';
+import { DayOfWeekEnum } from '../../util/enums/day-of-week.enum';
 
 @Entity()
 export class Schedule extends DefaultEntity {
@@ -9,7 +9,7 @@ export class Schedule extends DefaultEntity {
   time: string;
 
   @Column()
-  day: DayOfWeek;
+  day: DayOfWeekEnum;
 
   @ManyToOne(() => Class, (c) => c.schedule, {
     onDelete: 'CASCADE',

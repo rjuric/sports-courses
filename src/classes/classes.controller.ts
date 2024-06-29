@@ -16,9 +16,10 @@ import { CreateClassDto } from './dto/create-class.dto';
 import { UpdateClassDto } from './dto/update-class.dto';
 import { FindAllClassesDto } from './dto/find-all-classes.dto';
 import { ApplyToClassDto } from './dto/apply-to-class.dto';
-import { Sender } from '../util/decorators/sender.decorator';
 import { User } from '../users/entities/user.entity';
-import { Admin } from '../util/decorators/admin.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { Role } from '../util/enums/role';
+import { Sender } from '../users/decorators/sender.decorator';
 
 @Controller('classes')
 export class ClassesController {
@@ -44,23 +45,25 @@ export class ClassesController {
     return this.classesService.apply(id, user, applyClassDto.isApplied);
   }
 
+  @Roles(Role.ADMIN)
   @Post()
-  create(@Body() createClassDto: CreateClassDto, @Admin() _: User) {
+  create(@Body() createClassDto: CreateClassDto) {
     return this.classesService.create(createClassDto);
   }
 
+  @Roles(Role.ADMIN)
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Admin() _: User,
     @Body() updateClassDto: UpdateClassDto,
   ) {
     return this.classesService.update(id, updateClassDto);
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
+  @Roles(Role.ADMIN)
   @Delete(':id')
-  async remove(@Param('id', ParseIntPipe) id: number, @Admin() _: User) {
+  async remove(@Param('id', ParseIntPipe) id: number) {
     await this.classesService.remove(id);
   }
 }

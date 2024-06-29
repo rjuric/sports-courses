@@ -3,7 +3,7 @@ POST http://localhost:3000/api/auth/sign-up
 content-type: application/json
 
 {
-  "email": "roko@example.com",
+  "email": "roko4@example.com",
   "password": "somepassword"
 }
 
@@ -12,12 +12,12 @@ POST http://localhost:3000/api/auth/sign-in
 content-type: application/json
 
 {
-  "email": "roko@example.com",
+  "email": "roko3@example.com",
   "password": "somepassword"
 }
 
 ### Refresh
 POST http://localhost:3000/api/auth/refresh
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTk1OTY0NTQsImV4cCI6MTcyMDIwMTI1NH0.qLaQANBXjRpBUgr7FWSH74YfRtCGk_37sxJSNo-2tr4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTcxOTY3NTA4NSwiZXhwIjoxNzIwMjc5ODg1fQ.6SlsZMBIX25HwBDWuNWWGg5mzP2fM5VB8bQ3EGFvFTE
 
 

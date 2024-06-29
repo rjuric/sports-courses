@@ -1,5 +1,5 @@
 import { Column, Entity } from 'typeorm';
-import { DefaultEntity } from '../../util/default.entity';
+import { DefaultEntity } from '../../util/entities/default.entity';
 
 @Entity()
 export class Tokens extends DefaultEntity {
