@@ -1,9 +1,8 @@
 import { Schedule } from './schedule.entity';
 import { DefaultEntity } from '../../util/entities/default.entity';
-import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
+import { Column, Entity, ManyToMany, OneToMany } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
-import { Role } from '../../util/enums/role';
 
 @Entity()
 export class Class extends DefaultEntity {

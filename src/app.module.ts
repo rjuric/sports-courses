@@ -15,10 +15,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from './jwt/jwt.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { InjectSenderMiddleware } from './users/middlewares/inject-sender.middleware';
-import { User } from './users/entities/user.entity';
-import { Class } from './classes/entities/class.entity';
-import { Schedule } from './classes/entities/schedule.entity';
-import { Tokens } from './auth/entities/tokens.entity';
 
 @Module({
   imports: [

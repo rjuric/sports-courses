@@ -23,6 +23,7 @@ import {
 } from '@nestjs/swagger';
 
 @ApiTags('Users')
+@Roles(Role.ADMIN)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -31,7 +32,6 @@ export class UsersController {
   @ApiUnauthorizedResponse({ description: 'Access token is invalid.' })
   @ApiForbiddenResponse({ description: 'Sender is not ADMIN.' })
   @ApiOkResponse({ description: 'Updated  roles.' })
-  @Roles(Role.ADMIN)
   @Patch(':id/roles')
   updateRoles(
     @Param('id', ParseIntPipe) id: number,
@@ -45,7 +45,6 @@ export class UsersController {
   @ApiForbiddenResponse({ description: 'Sender is not ADMIN.' })
   @ApiNoContentResponse({ description: 'Successfully deleted user.' })
   @HttpCode(HttpStatus.NO_CONTENT)
-  @Roles(Role.ADMIN)
   @Delete(':id')
   async remove(@Param('id', ParseIntPipe) id: number) {
     const didRemove = await this.usersService.remove(id);

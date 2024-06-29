@@ -1,14 +1,7 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { SignUpDto } from '../users/dto/sign-up.dto';
 import { UsersService } from '../users/users.service';
 import { ConfigService } from '@nestjs/config';
-
 import * as bcrypt from 'bcrypt';
 import { SignInDto } from '../users/dto/sign-in.dto';
 import { InjectRepository } from '@nestjs/typeorm';
