@@ -11,7 +11,9 @@ export class Class extends DefaultEntity {
   @Column()
   duration: number;
 
-  @OneToMany(() => Schedule, (schedule) => schedule.class)
+  @OneToMany(() => Schedule, (schedule) => schedule.class, {
+    cascade: true,
+  })
   schedule: Schedule[];
 
   @ManyToMany(() => User, (user) => user.classes)

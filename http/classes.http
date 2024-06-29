@@ -1,8 +1,54 @@
-### GET request to example server
-GET http://localhost:3000/api/classes
-Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTk1ODQyNTQsImV4cCI6MTcxOTU4Nzg1NH0.yNv8iY2Hq4URvi9zu9ucDzjPvk-XRFFVa0ZbdOKziZo"
+### Get all classes
+GET http://localhost:3000/api/classes?sports=cricket,basketball
 
-###
+### Get single class by ID
+GET http://localhost:3000/api/classes/3
+
+### Create a class
+POST http://localhost:3000/api/classes
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTk2NDg0ODcsImV4cCI6MTcxOTY1MjA4N30.KcMOii-IjmpNDZzEnw2BWO3f4zGCTJF6m10YawPNiSk
+content-type: application/json
+
+{
+  "sport": "rugby",
+  "duration": 90,
+  "schedule": [
+    {
+      "day": 0,
+      "time": "12:45"
+    },
+    {
+      "day": 3,
+      "time": "18:00"
+    }
+  ]
+}
+
+### Update a class
+PATCH http://localhost:3000/api/classes/3
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTcxOTY1Mzg3NywiZXhwIjoxNzE5NjU3NDc3fQ.s-jF32b_xBX0RGSTK1hhhFZcTflh7lvD-BJBkai9Wzg
+content-type: application/json
+
+{
+  "schedule": [
+    {
+      "id": 6,
+      "day": 4,
+      "time": "18:00"
+    }
+  ]
+}
+
+### Delete a class
+DELETE http://localhost:3000/api/classes/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTcxOTY1Mzg3NywiZXhwIjoxNzE5NjU3NDc3fQ.s-jF32b_xBX0RGSTK1hhhFZcTflh7lvD-BJBkai9Wzg
+
 
 ### Apply To Class
-POST http://localhost:3000/api/classes/2
+POST http://localhost:3000/api/classes/1/apply
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTk2NDg0ODcsImV4cCI6MTcxOTY1MjA4N30.KcMOii-IjmpNDZzEnw2BWO3f4zGCTJF6m10YawPNiSk
+content-type: application/json
+
+{
+  "isApplied": false
+}

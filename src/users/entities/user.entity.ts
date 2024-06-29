@@ -27,5 +27,5 @@ export class User extends DefaultEntity {
 
   @ManyToMany(() => Class)
   @JoinTable()
-  classes: [Class];
+  classes: Class[];
 }
