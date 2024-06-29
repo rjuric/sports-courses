@@ -1,18 +1,42 @@
-import { Controller, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseIntPipe,
+  NotFoundException,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateRolesDto } from './dto/update-roles.dto';
+import { Role } from '../util/enums/role';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  @Roles(Role.ADMIN)
+  @Patch(':id/roles')
+  updateRoles(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateRolesDto: UpdateRolesDto,
+  ) {
+    return this.usersService.update(id, updateRolesDto);
   }
 
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Roles(Role.ADMIN)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    const didRemove = await this.usersService.remove(id);
+
+    if (!didRemove) {
+      throw new NotFoundException();
+    }
+
+    return;
   }
 }

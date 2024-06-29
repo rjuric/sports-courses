@@ -10,6 +10,7 @@ import {
   ParseIntPipe,
   HttpCode,
   HttpStatus,
+  NotFoundException,
 } from '@nestjs/common';
 import { ClassesService } from './classes.service';
 import { CreateClassDto } from './dto/create-class.dto';
@@ -26,23 +27,39 @@ export class ClassesController {
   constructor(private readonly classesService: ClassesService) {}
 
   @Get()
-  findAll(@Query() findAllClassesDto: FindAllClassesDto) {
+  find(@Query() findAllClassesDto: FindAllClassesDto) {
     const sports = findAllClassesDto.sports?.split(',');
-    return this.classesService.findAll(sports);
+    return this.classesService.find(sports);
   }
 
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.classesService.findOne(id);
+    const result = this.classesService.findOne(id);
+
+    if (!result) {
+      throw new NotFoundException();
+    }
+
+    return result;
   }
 
   @Post(':id/apply')
-  apply(
+  async apply(
     @Param('id', ParseIntPipe) id: number,
     @Sender() user: User,
     @Body() applyClassDto: ApplyToClassDto,
   ) {
-    return this.classesService.apply(id, user, applyClassDto.isApplied);
+    const result = await this.classesService.apply(
+      id,
+      user,
+      applyClassDto.isApplied,
+    );
+
+    if (!result) {
+      throw new NotFoundException();
+    }
+
+    return;
   }
 
   @Roles(Role.ADMIN)
@@ -53,17 +70,29 @@ export class ClassesController {
 
   @Roles(Role.ADMIN)
   @Patch(':id')
-  update(
+  async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateClassDto: UpdateClassDto,
   ) {
-    return this.classesService.update(id, updateClassDto);
+    const result = await this.classesService.update(id, updateClassDto);
+
+    if (!result) {
+      throw new NotFoundException();
+    }
+
+    return result;
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
   @Roles(Role.ADMIN)
   @Delete(':id')
   async remove(@Param('id', ParseIntPipe) id: number) {
-    await this.classesService.remove(id);
+    const result = await this.classesService.remove(id);
+
+    if (!result) {
+      throw new NotFoundException();
+    }
+
+    return;
   }
 }

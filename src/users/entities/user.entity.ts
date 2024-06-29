@@ -25,9 +25,13 @@ export class User extends DefaultEntity {
   @Column({ type: 'enum', enum: Role, array: true, default: [Role.USER] })
   roles: Role[];
 
-  @OneToOne(() => Tokens, { cascade: true })
+  @OneToOne(() => Tokens, {
+    cascade: true,
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
   @JoinColumn()
-  tokens: Tokens;
+  tokens?: Tokens;
 
   @ManyToMany(() => Class)
   @JoinTable()

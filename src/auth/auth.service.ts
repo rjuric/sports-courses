@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -27,44 +28,46 @@ export class AuthService {
   ) {}
 
   async signUp(createUserDto: SignUpDto) {
-    const userExists = await this.usersService.findByEmail(createUserDto.email);
+    const user = await this.usersService.findByEmail(createUserDto.email);
 
-    if (userExists) {
-      throw new BadRequestException('User already exists.');
+    if (user) {
+      return null;
     }
 
     const hashedPassword = await this.hash(createUserDto.password);
-
-    const newUser = this.usersService.create(
+    const tokens = await this.getTokens(createUserDto.email);
+    return this.usersService.create(
       createUserDto.email,
       hashedPassword,
+      tokens,
     );
-
-    newUser.tokens = await this.getTokens(newUser.id);
-
-    return newUser.save();
   }
 
   async signIn(signInDto: SignInDto) {
     const user = await this.usersService.findByEmail(signInDto.email);
     if (!user) {
-      throw new NotFoundException('User does not exist.');
+      return null;
     }
 
     const isMatch = await bcrypt.compare(signInDto.password, user.password);
 
     if (!isMatch) {
-      throw new UnauthorizedException('Password is incorrect.');
+      return null;
     }
 
-    user.tokens = await this.getTokens(user.id);
+    user.tokens = await this.getTokens(user.email);
     const savedUser = await user.save();
 
     return savedUser.tokens;
   }
 
+  async signOut(user: User) {
+    await user.tokens?.remove();
+    return;
+  }
+
   async refresh(user: User) {
-    user.tokens = await this.getTokens(user.id);
+    user.tokens = await this.getTokens(user.email);
     return user.save();
   }
 
@@ -73,14 +76,14 @@ export class AuthService {
     return await bcrypt.hash(password, saltOrRounds);
   }
 
-  private async getTokens(userId: number) {
+  private async getTokens(email: string) {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.generate(
-        { userId },
+        { email },
         this.configService.get<string>('jwt.access.expiresIn')!,
       ),
       this.jwtService.generate(
-        { userId },
+        { email },
         this.configService.get<string>('jwt.refresh.expiresIn')!,
       ),
     ]);

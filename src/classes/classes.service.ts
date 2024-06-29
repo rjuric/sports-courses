@@ -14,10 +14,11 @@ export class ClassesService {
   ) {}
 
   create(createClassDto: CreateClassDto) {
-    return this.classesRepository.save(createClassDto);
+    const theClass = this.classesRepository.create(createClassDto);
+    return this.classesRepository.save(theClass);
   }
 
-  findAll(sports?: string[]) {
+  find(sports?: string[]) {
     if (!sports) {
       return this.classesRepository.find({ relations: { schedule: true } });
     }
@@ -31,8 +32,7 @@ export class ClassesService {
   async apply(id: number, user: User, isApplied: boolean) {
     if (!isApplied) {
       user.classes = user.classes.filter((c) => c.id !== id);
-      await user.save();
-      return;
+      return await user.save();
     }
 
     const course = await this.classesRepository.findOne({
@@ -40,42 +40,37 @@ export class ClassesService {
     });
 
     if (!course) {
-      throw new NotFoundException(`Course with ${id} not found`);
+      return null;
     }
 
     user.classes.push(course);
-    await user.save();
-
-    return;
+    return await user.save();
   }
 
-  async findOne(id: number) {
-    const course = await this.classesRepository.findOne({
+  findOne(id: number) {
+    return this.classesRepository.findOne({
+      where: { id },
+      relations: { schedule: true },
+    });
+  }
+
+  async update(id: number, updateClassDto: UpdateClassDto) {
+    const theClass = await this.classesRepository.findOne({
       where: { id },
       relations: { schedule: true },
     });
 
-    if (!course) {
-      throw new NotFoundException();
+    if (!theClass) {
+      return null;
     }
 
-    return course;
-  }
-
-  update(id: number, updateClassDto: UpdateClassDto) {
-    return this.classesRepository.save({
-      id,
-      ...updateClassDto,
-    });
+    Object.assign(theClass, updateClassDto);
+    return theClass.save();
   }
 
   async remove(id: number) {
     const result = await this.classesRepository.delete({ id });
 
-    if (result?.affected === 0) {
-      throw new NotFoundException();
-    }
-
-    return;
+    return result?.affected !== 0;
   }
 }
