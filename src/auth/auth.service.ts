@@ -68,7 +68,8 @@ export class AuthService {
 
   async refresh(user: User) {
     user.tokens = await this.getTokens(user.email);
-    return user.save();
+    const saved = await user.save();
+    return saved.tokens;
   }
 
   private async hash(password: string) {

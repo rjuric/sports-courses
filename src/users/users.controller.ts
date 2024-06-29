@@ -13,11 +13,24 @@ import { UsersService } from './users.service';
 import { UpdateRolesDto } from './dto/update-roles.dto';
 import { Role } from '../util/enums/role';
 import { Roles } from '../auth/decorators/roles.decorator';
+import {
+  ApiBearerAuth,
+  ApiForbiddenResponse,
+  ApiNoContentResponse,
+  ApiOkResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 
+@ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @ApiBearerAuth()
+  @ApiUnauthorizedResponse({ description: 'Access token is invalid.' })
+  @ApiForbiddenResponse({ description: 'Sender is not ADMIN.' })
+  @ApiOkResponse({ description: 'Updated  roles.' })
   @Roles(Role.ADMIN)
   @Patch(':id/roles')
   updateRoles(
@@ -27,6 +40,10 @@ export class UsersController {
     return this.usersService.update(id, updateRolesDto);
   }
 
+  @ApiBearerAuth()
+  @ApiUnauthorizedResponse({ description: 'Access token is invalid.' })
+  @ApiForbiddenResponse({ description: 'Sender is not ADMIN.' })
+  @ApiNoContentResponse({ description: 'Successfully deleted user.' })
   @HttpCode(HttpStatus.NO_CONTENT)
   @Roles(Role.ADMIN)
   @Delete(':id')

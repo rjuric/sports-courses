@@ -1,4 +1,4 @@
-export enum DayOfWeekEnum {
+export enum DayOfWeek {
   MONDAY,
   TUESDAY,
   WEDNESDAY,

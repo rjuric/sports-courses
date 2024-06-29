@@ -21,17 +21,35 @@ import { User } from '../users/entities/user.entity';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '../util/enums/role';
 import { Sender } from '../users/decorators/sender.decorator';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiNoContentResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiParam,
+  ApiQuery,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
+import { Class } from './entities/class.entity';
 
+@ApiTags('Classes')
 @Controller('classes')
 export class ClassesController {
   constructor(private readonly classesService: ClassesService) {}
 
+  @ApiOkResponse({ type: Class, isArray: true })
   @Get()
   find(@Query() findAllClassesDto: FindAllClassesDto) {
     const sports = findAllClassesDto.sports?.split(',');
     return this.classesService.find(sports);
   }
 
+  @ApiOkResponse({ type: Class })
+  @ApiNotFoundResponse({ description: 'No class found.' })
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     const result = this.classesService.findOne(id);
@@ -43,6 +61,10 @@ export class ClassesController {
     return result;
   }
 
+  @ApiBearerAuth()
+  @ApiUnauthorizedResponse({ description: 'Access token is invalid.' })
+  @ApiNoContentResponse()
+  @ApiNotFoundResponse({ description: 'No class found.' })
   @Post(':id/apply')
   async apply(
     @Param('id', ParseIntPipe) id: number,
@@ -62,12 +84,23 @@ export class ClassesController {
     return;
   }
 
+  @ApiBearerAuth()
+  @ApiUnauthorizedResponse({ description: 'Access token is invalid.' })
+  @ApiForbiddenResponse({ description: 'Sender is not ADMIN.' })
+  @ApiCreatedResponse({ type: Class })
+  @ApiNotFoundResponse({ description: 'No class found.' })
   @Roles(Role.ADMIN)
   @Post()
   create(@Body() createClassDto: CreateClassDto) {
     return this.classesService.create(createClassDto);
   }
 
+  @ApiBearerAuth()
+  @ApiUnauthorizedResponse({ description: 'Access token is invalid.' })
+  @ApiForbiddenResponse({ description: 'Sender is not ADMIN.' })
+  @ApiOkResponse({ type: Class })
+  @ApiNotFoundResponse({ description: 'No class found.' })
+  @ApiBody({ type: CreateClassDto })
   @Roles(Role.ADMIN)
   @Patch(':id')
   async update(
@@ -83,6 +116,11 @@ export class ClassesController {
     return result;
   }
 
+  @ApiBearerAuth()
+  @ApiUnauthorizedResponse({ description: 'Access token is invalid.' })
+  @ApiForbiddenResponse({ description: 'Sender is not ADMIN.' })
+  @ApiNoContentResponse()
+  @ApiNotFoundResponse({ description: 'No class found.' })
   @HttpCode(HttpStatus.NO_CONTENT)
   @Roles(Role.ADMIN)
   @Delete(':id')
