@@ -15,11 +15,17 @@ import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class User extends DefaultEntity {
-  constructor(email: string, password: string, tokens?: Tokens) {
+  constructor(
+    email: string,
+    password: string,
+    tokens?: Tokens,
+    roles: Role[] = [Role.USER],
+  ) {
     super();
     this.email = email;
     this.password = password;
     this.tokens = tokens;
+    this.roles = roles;
   }
 
   @ApiProperty()

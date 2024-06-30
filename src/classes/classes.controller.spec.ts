@@ -2,7 +2,7 @@ import { ClassesController } from './classes.controller';
 import { ClassesService } from './classes.service';
 import { TestBed } from '@automock/jest';
 import { FindAllClassesDto } from './dto/find-all-classes.dto';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { Class } from './entities/class.entity';
 import { User } from '../users/entities/user.entity';
 import { ApplyToClassDto } from './dto/apply-to-class.dto';
@@ -11,8 +11,8 @@ describe('ClassesController', () => {
   let sut: ClassesController;
   let service: jest.Mocked<ClassesService>;
 
-  beforeAll(async () => {
-    const { unit, unitRef } = await TestBed.create(ClassesController).compile();
+  beforeEach(async () => {
+    const { unit, unitRef } = TestBed.create(ClassesController).compile();
     sut = unit;
     service = unitRef.get(ClassesService);
   });

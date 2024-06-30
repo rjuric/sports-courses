@@ -10,7 +10,7 @@ describe('UsersController', () => {
   let sut: UsersController;
   let service: jest.Mocked<UsersService>;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(UsersController).compile();
     sut = unit;
     service = unitRef.get(UsersService);
@@ -36,7 +36,7 @@ describe('UsersController', () => {
   });
 
   it('remove throws 404 on false returned from service', async () => {
-    service.remove.mockResolvedValue(false);
+    service.remove.mockResolvedValueOnce(false);
 
     await expect(async () => {
       await sut.remove(1);
@@ -45,7 +45,7 @@ describe('UsersController', () => {
   });
 
   it('remove returns on true returned from service', async () => {
-    service.remove.mockResolvedValue(true);
+    service.remove.mockResolvedValueOnce(true);
 
     await sut.remove(1);
 

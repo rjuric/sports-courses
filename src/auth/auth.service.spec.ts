@@ -1,16 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
-import { ConfigService } from '@nestjs/config';
 import { JwtService } from '../jwt/jwt.service';
 import { Repository } from 'typeorm';
 import { Tokens } from './entities/tokens.entity';
 import { User } from '../users/entities/user.entity';
-import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { MockFunctionMetadata, ModuleMocker } from 'jest-mock';
 import { PasswordsService } from '../passwords/passwords.service';
-import { SaveOptions } from 'typeorm/repository/SaveOptions';
-import { DeepPartial } from 'typeorm/common/DeepPartial';
 
 const moduleMocker = new ModuleMocker(global);
 
@@ -19,7 +16,6 @@ const mockTokens = new Tokens(1, 'encrypted_token', 'encrypted_token');
 describe('AuthService', () => {
   let sut: AuthService;
   let usersService: UsersService;
-  let configService: ConfigService;
   let passwordsService: PasswordsService;
   let jwtService: JwtService;
   let tokensRepository: Repository<Tokens>;
@@ -55,7 +51,6 @@ describe('AuthService', () => {
 
     sut = module.get<AuthService>(AuthService);
     usersService = module.get<UsersService>(UsersService);
-    configService = module.get<ConfigService>(ConfigService);
     passwordsService = module.get<PasswordsService>(PasswordsService);
     jwtService = module.get<JwtService>(JwtService);
     tokensRepository = module.get<Repository<Tokens>>(

@@ -13,7 +13,7 @@ export class UsersService {
 
   create(email: string, password: string, tokens: Tokens) {
     const user = this.repository.create({ email, password, tokens });
-    return user.save();
+    return this.repository.save(user);
   }
 
   async findByEmail(email: string) {
@@ -44,7 +44,10 @@ export class UsersService {
     });
   }
 
-  async update(id: number, updateUserDto: UpdateRolesDto) {
+  async update(
+    id: number,
+    updateUserDto: UpdateRolesDto,
+  ): Promise<User | null> {
     const user = await this.repository.findOne({ where: { id } });
 
     if (!user) {
@@ -53,12 +56,12 @@ export class UsersService {
 
     user.roles = updateUserDto.roles;
 
-    return user.save();
+    return this.repository.save(user);
   }
 
-  async remove(id: number) {
+  async remove(id: number): Promise<boolean> {
     const result = await this.repository.delete(id);
 
-    return result?.affected !== 0;
+    return result.affected !== 0;
   }
 }

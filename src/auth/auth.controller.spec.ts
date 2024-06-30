@@ -50,7 +50,7 @@ describe('AuthController', () => {
 
     expect(service.signIn).toHaveBeenCalled();
 
-    service.signIn.mockResolvedValue(undefined);
+    service.signIn.mockResolvedValue(null);
 
     await expect(async () => {
       await sut.signIn({} as SignInDto);
@@ -59,17 +59,20 @@ describe('AuthController', () => {
     expect(service.signIn).toHaveBeenCalledTimes(2);
   });
 
-  it('signIn returns tokens', async () => {
+  it('signIn returns user', async () => {
     const tokens = {
       accessToken: 'a',
       refreshToken: 'r',
     } as Tokens;
-    service.signIn.mockResolvedValue(tokens);
+
+    const mockedUser = new User('test@test.com', 'test_hashed', tokens);
+
+    service.signIn.mockResolvedValue(mockedUser);
     const dto = { email: 'email@test.com', password: 'any' };
 
     const result = await sut.signIn(dto);
 
-    expect(result).toEqual(tokens);
+    expect(result).toEqual(mockedUser);
     expect(service.signIn).toHaveBeenCalled();
   });
 
