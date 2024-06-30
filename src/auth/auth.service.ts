@@ -13,8 +13,8 @@ import { JwtService } from '../jwt/jwt.service';
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
-    private configService: ConfigService,
+    private readonly usersService: UsersService,
+    private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
     @InjectRepository(Tokens)
     private readonly tokensRepository: Repository<Tokens>,
