@@ -5,6 +5,13 @@ import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class Tokens extends DefaultEntity {
+  constructor(id: number, accessToken: string, refreshToken: string) {
+    super();
+    this.id = id;
+    this.accessToken = accessToken;
+    this.refreshToken = refreshToken;
+  }
+
   @ApiProperty()
   @Column()
   accessToken: string;

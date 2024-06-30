@@ -15,6 +15,13 @@ import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class User extends DefaultEntity {
+  constructor(email: string, password: string, tokens?: Tokens) {
+    super();
+    this.email = email;
+    this.password = password;
+    this.tokens = tokens;
+  }
+
   @ApiProperty()
   @Column({ unique: true })
   email: string;

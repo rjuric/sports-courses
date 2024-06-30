@@ -15,6 +15,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from './jwt/jwt.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { InjectSenderMiddleware } from './users/middlewares/inject-sender.middleware';
+import { PasswordsModule } from './passwords/passwords.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { InjectSenderMiddleware } from './users/middlewares/inject-sender.middle
       inject: [ConfigService],
     }),
     JwtModule,
+    PasswordsModule,
   ],
   controllers: [AppController],
   providers: [

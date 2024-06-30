@@ -17,7 +17,10 @@ export class UsersService {
   }
 
   async findByEmail(email: string) {
-    return await this.repository.findOne({ where: { email } });
+    return await this.repository.findOne({
+      where: { email },
+      relations: { tokens: true, classes: true },
+    });
   }
 
   async findByToken(token: string) {

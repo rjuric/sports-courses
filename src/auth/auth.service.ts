@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { SignUpDto } from '../users/dto/sign-up.dto';
 import { UsersService } from '../users/users.service';
 import { ConfigService } from '@nestjs/config';
-import * as bcrypt from 'bcrypt';
 import { SignInDto } from '../users/dto/sign-in.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Tokens } from './entities/tokens.entity';
 import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
 import { JwtService } from '../jwt/jwt.service';
+import { PasswordsService } from '../passwords/passwords.service';
 
 @Injectable()
 export class AuthService {
@@ -16,24 +16,21 @@ export class AuthService {
     private readonly usersService: UsersService,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
+    private readonly passwordsService: PasswordsService,
     @InjectRepository(Tokens)
     private readonly tokensRepository: Repository<Tokens>,
   ) {}
 
-  async signUp(createUserDto: SignUpDto) {
-    const user = await this.usersService.findByEmail(createUserDto.email);
+  async signUp(signUpDto: SignUpDto) {
+    const user = await this.usersService.findByEmail(signUpDto.email);
 
     if (user) {
       return null;
     }
 
-    const hashedPassword = await this.hash(createUserDto.password);
-    const tokens = await this.getTokens(createUserDto.email);
-    return this.usersService.create(
-      createUserDto.email,
-      hashedPassword,
-      tokens,
-    );
+    const hashedPassword = await this.passwordsService.hash(signUpDto.password);
+    const tokens = await this.getTokens(signUpDto.email);
+    return this.usersService.create(signUpDto.email, hashedPassword, tokens);
   }
 
   async signIn(signInDto: SignInDto) {
@@ -42,16 +39,17 @@ export class AuthService {
       return null;
     }
 
-    const isMatch = await bcrypt.compare(signInDto.password, user.password);
+    const isMatch = await this.passwordsService.compare(
+      signInDto.password,
+      user.password,
+    );
 
     if (!isMatch) {
       return null;
     }
 
     user.tokens = await this.getTokens(user.email);
-    const savedUser = await user.save();
-
-    return savedUser.tokens;
+    return await user.save();
   }
 
   async signOut(user: User) {
@@ -63,11 +61,6 @@ export class AuthService {
     user.tokens = await this.getTokens(user.email);
     const saved = await user.save();
     return saved.tokens;
-  }
-
-  private async hash(password: string) {
-    const saltOrRounds = 10;
-    return await bcrypt.hash(password, saltOrRounds);
   }
 
   private async getTokens(email: string) {

@@ -8,21 +8,21 @@ import { SignInDto } from '../users/dto/sign-in.dto';
 import { Tokens } from './entities/tokens.entity';
 
 describe('AuthController', () => {
-  let controller: AuthController;
+  let sut: AuthController;
   let service: jest.Mocked<AuthService>;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const { unit, unitRef } = TestBed.create(AuthController).compile();
-    controller = unit;
+    sut = unit;
     service = unitRef.get(AuthService);
   });
 
   it('signUp throws 400 on service returning null', async () => {
     service.signUp.mockResolvedValue(null);
 
-    await expect(
-      async () => await controller.signUp({} as SignUpDto),
-    ).rejects.toThrow(BadRequestException);
+    await expect(async () => await sut.signUp({} as SignUpDto)).rejects.toThrow(
+      BadRequestException,
+    );
     expect(service.signUp).toHaveBeenCalled();
   });
 
@@ -35,7 +35,7 @@ describe('AuthController', () => {
     const dto = new SignUpDto();
     Object.assign(dto, mockedUser);
 
-    const result = await controller.signUp(dto);
+    const result = await sut.signUp(dto);
 
     expect(result).toEqual(mockedUser);
     expect(service.signUp).toHaveBeenCalled();
@@ -45,7 +45,7 @@ describe('AuthController', () => {
     service.signIn.mockResolvedValue(null);
 
     await expect(async () => {
-      await controller.signIn({} as SignInDto);
+      await sut.signIn({} as SignInDto);
     }).rejects.toThrow(BadRequestException);
 
     expect(service.signIn).toHaveBeenCalled();
@@ -53,7 +53,7 @@ describe('AuthController', () => {
     service.signIn.mockResolvedValue(undefined);
 
     await expect(async () => {
-      await controller.signIn({} as SignInDto);
+      await sut.signIn({} as SignInDto);
     }).rejects.toThrow(BadRequestException);
 
     expect(service.signIn).toHaveBeenCalledTimes(2);
@@ -67,20 +67,20 @@ describe('AuthController', () => {
     service.signIn.mockResolvedValue(tokens);
     const dto = { email: 'email@test.com', password: 'any' };
 
-    const result = await controller.signIn(dto);
+    const result = await sut.signIn(dto);
 
     expect(result).toEqual(tokens);
     expect(service.signIn).toHaveBeenCalled();
   });
 
   it('service.signOut gets called', async () => {
-    await controller.signOut({} as User);
+    await sut.signOut({} as User);
 
     expect(service.signOut).toHaveBeenCalled();
   });
 
   it('service.refresh gets called', async () => {
-    await controller.refresh({} as User);
+    await sut.refresh({} as User);
 
     expect(service.refresh).toHaveBeenCalled();
   });

@@ -7,12 +7,12 @@ import { User } from './entities/user.entity';
 import { NotFoundException } from '@nestjs/common';
 
 describe('UsersController', () => {
-  let controller: UsersController;
+  let sut: UsersController;
   let service: jest.Mocked<UsersService>;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const { unit, unitRef } = TestBed.create(UsersController).compile();
-    controller = unit;
+    sut = unit;
     service = unitRef.get(UsersService);
   });
 
@@ -20,7 +20,7 @@ describe('UsersController', () => {
     service.update.mockResolvedValue(null);
 
     await expect(async () => {
-      return await controller.updateRoles(1, {} as UpdateRolesDto);
+      return await sut.updateRoles(1, {} as UpdateRolesDto);
     }).rejects.toThrow(NotFoundException);
     expect(service.update).toHaveBeenCalledTimes(1);
   });
@@ -29,7 +29,7 @@ describe('UsersController', () => {
     const newRoles = { roles: [Role.ADMIN, Role.USER] };
     service.update.mockResolvedValue(newRoles as User);
 
-    const result = await controller.updateRoles(1, newRoles as UpdateRolesDto);
+    const result = await sut.updateRoles(1, newRoles as UpdateRolesDto);
 
     expect(result).toEqual(newRoles);
     expect(service.update).toHaveBeenCalledTimes(1);
@@ -39,7 +39,7 @@ describe('UsersController', () => {
     service.remove.mockResolvedValue(false);
 
     await expect(async () => {
-      await controller.remove(1);
+      await sut.remove(1);
     }).rejects.toThrow(NotFoundException);
     expect(service.remove).toHaveBeenCalledTimes(1);
   });
@@ -47,7 +47,7 @@ describe('UsersController', () => {
   it('remove returns on true returned from service', async () => {
     service.remove.mockResolvedValue(true);
 
-    await controller.remove(1);
+    await sut.remove(1);
 
     expect(service.remove).toHaveBeenCalledTimes(1);
   });

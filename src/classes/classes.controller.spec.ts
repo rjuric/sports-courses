@@ -8,19 +8,19 @@ import { User } from '../users/entities/user.entity';
 import { ApplyToClassDto } from './dto/apply-to-class.dto';
 
 describe('ClassesController', () => {
-  let controller: ClassesController;
+  let sut: ClassesController;
   let service: jest.Mocked<ClassesService>;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const { unit, unitRef } = await TestBed.create(ClassesController).compile();
-    controller = unit;
+    sut = unit;
     service = unitRef.get(ClassesService);
   });
 
   it('find calls the service with correct parameters', async () => {
     const dto = { sports: 'tennis,soccer,basketball' } as FindAllClassesDto;
 
-    await controller.find(dto);
+    await sut.find(dto);
 
     expect(service.find).toHaveBeenCalledWith([
       'tennis',
@@ -33,7 +33,7 @@ describe('ClassesController', () => {
     service.findOne.mockResolvedValue(null);
 
     await expect(async () => {
-      await controller.findOne(1);
+      await sut.findOne(1);
     }).rejects.toThrow(NotFoundException);
     expect(service.findOne).toHaveBeenCalledTimes(1);
   });
@@ -45,7 +45,7 @@ describe('ClassesController', () => {
     } as Class;
     service.findOne.mockResolvedValue(mockedClass);
 
-    const result = await controller.findOne(1);
+    const result = await sut.findOne(1);
 
     expect(result).toStrictEqual(mockedClass);
     expect(service.findOne).toHaveBeenCalledTimes(1);
@@ -57,7 +57,7 @@ describe('ClassesController', () => {
     const mockedDto = {} as ApplyToClassDto;
 
     await expect(async () => {
-      await controller.apply(1, mockedUser, mockedDto);
+      await sut.apply(1, mockedUser, mockedDto);
     }).rejects.toThrow(NotFoundException);
     expect(service.apply).toHaveBeenCalledTimes(1);
   });

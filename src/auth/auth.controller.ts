@@ -41,7 +41,7 @@ export class AuthController {
     return result;
   }
 
-  @ApiOkResponse({ type: Tokens })
+  @ApiOkResponse({ type: User })
   @ApiBadRequestResponse({
     description:
       "User not found, passwords don't match, DTO validation failed.",
