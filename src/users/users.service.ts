@@ -41,8 +41,16 @@ export class UsersService {
     });
   }
 
-  update(id: number, updateUserDto: UpdateRolesDto) {
-    return this.repository.save({ id, ...updateUserDto });
+  async update(id: number, updateUserDto: UpdateRolesDto) {
+    const user = await this.repository.findOne({ where: { id } });
+
+    if (!user) {
+      return null;
+    }
+
+    user.roles = updateUserDto.roles;
+
+    return user.save();
   }
 
   async remove(id: number) {

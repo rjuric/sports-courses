@@ -17,6 +17,7 @@ import {
   ApiBearerAuth,
   ApiForbiddenResponse,
   ApiNoContentResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiTags,
   ApiUnauthorizedResponse,
@@ -31,13 +32,20 @@ export class UsersController {
   @ApiBearerAuth()
   @ApiUnauthorizedResponse({ description: 'Access token is invalid.' })
   @ApiForbiddenResponse({ description: 'Sender is not ADMIN.' })
+  @ApiNotFoundResponse({ description: 'User with that id does not exist.' })
   @ApiOkResponse({ description: 'Updated  roles.' })
   @Patch(':id/roles')
-  updateRoles(
+  async updateRoles(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateRolesDto: UpdateRolesDto,
   ) {
-    return this.usersService.update(id, updateRolesDto);
+    const result = await this.usersService.update(id, updateRolesDto);
+
+    if (!result) {
+      throw new NotFoundException();
+    }
+
+    return result;
   }
 
   @ApiBearerAuth()
