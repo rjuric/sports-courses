@@ -15,6 +15,18 @@ import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateClassDto {
+  constructor(
+    sport: string,
+    description: string,
+    duration: number,
+    schedule: CreateClassScheduleDto[],
+  ) {
+    this.sport = sport;
+    this.description = description;
+    this.duration = duration;
+    this.schedule = schedule;
+  }
+
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
@@ -41,6 +53,11 @@ export class CreateClassDto {
 }
 
 export class CreateClassScheduleDto {
+  constructor(day: DayOfWeek, time: string) {
+    this.day = day;
+    this.time = time;
+  }
+
   @ApiProperty({ type: 'enum', enum: DayOfWeek })
   @IsEnum(DayOfWeek)
   day: DayOfWeek;

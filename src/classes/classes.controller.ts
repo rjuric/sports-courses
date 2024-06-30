@@ -42,7 +42,7 @@ export class ClassesController {
   @ApiOkResponse({ type: Class, isArray: true })
   @Get()
   find(@Query() findAllClassesDto: FindAllClassesDto) {
-    const sports = findAllClassesDto.sports?.split(',');
+    const sports = findAllClassesDto.sports?.toLowerCase().split(',');
     return this.classesService.find(sports);
   }
 

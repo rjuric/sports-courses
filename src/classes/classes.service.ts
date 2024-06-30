@@ -13,13 +13,16 @@ export class ClassesService {
     private readonly classesRepository: Repository<Class>,
   ) {}
 
-  create(createClassDto: CreateClassDto) {
-    const theClass = this.classesRepository.create(createClassDto);
+  create(createClassDto: CreateClassDto): Promise<Class> {
+    const theClass = this.classesRepository.create({
+      ...createClassDto,
+      sport: createClassDto.sport.toLowerCase(),
+    });
     return this.classesRepository.save(theClass);
   }
 
-  find(sports?: string[]) {
-    if (!sports) {
+  find(sports?: string[]): Promise<Class[]> {
+    if (!sports || sports.length === 0) {
       return this.classesRepository.find({ relations: { schedule: true } });
     }
 
@@ -47,7 +50,7 @@ export class ClassesService {
     return await user.save();
   }
 
-  findOne(id: number) {
+  findOne(id: number): Promise<Class | null> {
     return this.classesRepository.findOne({
       where: { id },
       relations: { schedule: true },
@@ -65,7 +68,7 @@ export class ClassesService {
     }
 
     Object.assign(theClass, updateClassDto);
-    return theClass.save();
+    return this.classesRepository.save(theClass);
   }
 
   async remove(id: number) {
