@@ -49,8 +49,8 @@ export class ClassesController {
   @ApiOkResponse({ type: Class })
   @ApiNotFoundResponse({ description: 'No class found.' })
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    const result = this.classesService.findOne(id);
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    const result = await this.classesService.findOne(id);
 
     if (!result) {
       throw new NotFoundException();

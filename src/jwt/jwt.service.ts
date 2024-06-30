@@ -7,11 +7,11 @@ export class JwtService {
   constructor(private readonly configService: ConfigService) {}
 
   async validate(token: string): Promise<boolean> {
-    return await new Promise((resolve, reject) => {
+    return await new Promise((resolve) => {
       jwt.verify(
         token,
         this.configService.get<string>('jwt.secret')!,
-        (err, decoded) => {
+        (err) => {
           if (err) {
             resolve(false);
           } else {
@@ -23,7 +23,7 @@ export class JwtService {
   }
 
   async generate(data: object, expiresIn: string): Promise<string | undefined> {
-    return await new Promise((resolve, reject) => {
+    return await new Promise((resolve) => {
       jwt.sign(
         data,
         this.configService.get<string>('jwt.secret')!,

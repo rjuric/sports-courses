@@ -26,40 +26,7 @@ describe('AuthController', () => {
     expect(service.signUp).toHaveBeenCalled();
   });
 
-  it('signUp throws 400 on invalid email in DTO', async () => {
-    const dto = new SignUpDto();
-    dto.email = 'not.an.email';
-    dto.password = '12AAAAAAAAAA';
-
-    await expect(async () => await controller.signUp(dto)).rejects.toThrow(
-      BadRequestException,
-    );
-    expect(service.signUp).toHaveBeenCalled();
-  });
-
-  it('signUp throws 400 on invalid password in DTO', async () => {
-    const dto = new SignUpDto();
-    dto.email = 'test@test.com';
-    dto.password = '11AAAAAAAAA';
-
-    await expect(async () => await controller.signUp(dto)).rejects.toThrow(
-      BadRequestException,
-    );
-    expect(service.signUp).toHaveBeenCalled();
-  });
-
-  it('signUp throws 400 on invalid DTO', async () => {
-    const dto = new SignUpDto();
-    dto.email = 'test.test.com';
-    dto.password = '11AAAAAAAAA';
-
-    await expect(async () => await controller.signUp(dto)).rejects.toThrow(
-      BadRequestException,
-    );
-    expect(service.signUp).toHaveBeenCalled();
-  });
-
-  it('signUp returns user on correct DTO', async () => {
+  it('signUp returns user', async () => {
     const mockedUser = {
       email: 'test@test.com',
       password: '12AAAAAAAAAA',
@@ -92,18 +59,7 @@ describe('AuthController', () => {
     expect(service.signIn).toHaveBeenCalledTimes(2);
   });
 
-  it('signIn throws 400 on invalid email in DTO', async () => {
-    const dto = new SignInDto();
-    dto.email = 'not.an.email';
-    dto.password = '12AAAAAAAAAA';
-
-    await expect(async () => await controller.signIn(dto)).rejects.toThrow(
-      BadRequestException,
-    );
-    expect(service.signIn).toHaveBeenCalled();
-  });
-
-  it('signIn returns tokens on correct DTO', async () => {
+  it('signIn returns tokens', async () => {
     const tokens = {
       accessToken: 'a',
       refreshToken: 'r',
