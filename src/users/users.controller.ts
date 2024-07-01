@@ -50,6 +50,7 @@ export class UsersController {
 
   @ApiBearerAuth()
   @ApiUnauthorizedResponse({ description: 'Access token is invalid.' })
+  @ApiNotFoundResponse({ description: 'User with that id does not exist.' })
   @ApiForbiddenResponse({ description: 'Sender is not ADMIN.' })
   @ApiNoContentResponse({ description: 'Successfully deleted user.' })
   @HttpCode(HttpStatus.NO_CONTENT)
