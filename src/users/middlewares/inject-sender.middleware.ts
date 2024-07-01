@@ -16,21 +16,25 @@ export class InjectSenderMiddleware implements NestMiddleware {
   ) {}
 
   async use(req: AuthenticatedRequest, res: Response, next: NextFunction) {
-    const token = req.headers.authorization?.split(' ').at(1);
+    const splitHeader = req.headers.authorization?.split(' ');
 
-    if (!token) {
+    if (
+      !splitHeader ||
+      splitHeader.length !== 2 ||
+      splitHeader.at(0) !== 'Bearer'
+    ) {
       next();
       return;
     }
+
+    const token = splitHeader[1];
 
     const validated = await this.jwtService.validate(token);
     if (!validated) {
       throw new UnauthorizedException();
     }
 
-    if (token) {
-      req.user = await this.usersService.findByToken(token);
-    }
+    req.user = await this.usersService.findByToken(token);
 
     next();
   }
