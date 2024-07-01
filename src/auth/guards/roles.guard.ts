@@ -14,6 +14,10 @@ export class RolesGuard implements CanActivate {
       return false;
     }
 
-    return this.roles.filter((role) => user.roles.includes(role)).length > 0;
+    if (this.roles.length === 0) {
+      return true;
+    }
+
+    return this.roles.filter((role) => user.roles?.includes(role)).length > 0;
   }
 }
