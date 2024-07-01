@@ -5,6 +5,7 @@ import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Tokens } from '../auth/entities/tokens.entity';
 import { Role } from '../util/enums/role';
+import { TestOnly } from '../util/decorators/test-only.decorator';
 
 @Injectable()
 export class UsersService {
@@ -69,5 +70,10 @@ export class UsersService {
     const result = await this.repository.delete(id);
 
     return result.affected !== 0;
+  }
+
+  @TestOnly
+  async testMakeAdmin(id: number) {
+    await this.repository.update(id, { roles: [Role.USER, Role.ADMIN] });
   }
 }

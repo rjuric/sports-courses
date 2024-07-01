@@ -2,8 +2,11 @@ import {
   ClassSerializerInterceptor,
   MiddlewareConsumer,
   Module,
+  ValidationPipe,
   NestModule,
 } from '@nestjs/common';
+
+import { APP_PIPE } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
@@ -40,8 +43,9 @@ import { PasswordsModule } from './passwords/passwords.module';
         } else {
           return {
             type: 'sqlite',
+            dropSchema: true,
             database: 'test.db.sqlite',
-            entities: ['**/*.entity.js'],
+            entities: ['**/*.entity.ts'],
             synchronize: true,
           };
         }
@@ -57,6 +61,7 @@ import { PasswordsModule } from './passwords/passwords.module';
       provide: APP_INTERCEPTOR,
       useClass: ClassSerializerInterceptor,
     },
+    { provide: APP_PIPE, useValue: new ValidationPipe({ whitelist: true }) },
   ],
 })
 export class AppModule implements NestModule {
