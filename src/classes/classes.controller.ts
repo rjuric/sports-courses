@@ -63,6 +63,7 @@ export class ClassesController {
   @ApiUnauthorizedResponse({ description: 'Access token is invalid.' })
   @ApiNoContentResponse()
   @ApiNotFoundResponse({ description: 'No class found.' })
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Post(':id/apply')
   async apply(
     @Param('id', ParseIntPipe) id: number,

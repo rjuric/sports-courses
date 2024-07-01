@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Tokens } from '../auth/entities/tokens.entity';
+import { Role } from '../util/enums/role';
 
 @Injectable()
 export class UsersService {
@@ -12,7 +13,12 @@ export class UsersService {
   ) {}
 
   create(email: string, password: string, tokens: Tokens) {
-    const user = this.repository.create({ email, password, tokens });
+    const user = this.repository.create({
+      email,
+      password,
+      tokens,
+      roles: [Role.USER],
+    });
     return this.repository.save(user);
   }
 

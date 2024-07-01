@@ -41,7 +41,7 @@ import { PasswordsModule } from './passwords/passwords.module';
           return {
             type: 'sqlite',
             database: 'test.db.sqlite',
-            entities: ['**/*.entity.ts'],
+            entities: ['**/*.entity.js'],
             synchronize: true,
           };
         }

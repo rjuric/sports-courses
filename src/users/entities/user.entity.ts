@@ -37,8 +37,10 @@ export class User extends DefaultEntity {
   password: string;
 
   @ApiProperty({ type: 'enum', enum: Role, default: [Role.USER] })
-  @Column({ type: 'enum', enum: Role, array: true, default: [Role.USER] })
-  roles: Role[];
+  @Column({
+    type: 'simple-array',
+  })
+  roles: string[];
 
   @ApiProperty()
   @OneToOne(() => Tokens, {
