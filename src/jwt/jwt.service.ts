@@ -10,7 +10,7 @@ export class JwtService {
     return await new Promise((resolve) => {
       jwt.verify(
         token,
-        this.configService.get<string>('jwt.secret')!,
+        this.configService.get<string>('JWT_SECRET')!,
         (err) => {
           if (err) {
             resolve(false);
@@ -26,7 +26,7 @@ export class JwtService {
     return await new Promise((resolve) => {
       jwt.sign(
         data,
-        this.configService.get<string>('jwt.secret')!,
+        this.configService.get<string>('JWT_SECRET')!,
         {
           expiresIn,
         },

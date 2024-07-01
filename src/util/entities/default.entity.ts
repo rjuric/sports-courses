@@ -13,10 +13,10 @@ export abstract class DefaultEntity extends BaseEntity {
   id: number;
 
   @Exclude()
-  @CreateDateColumn({ type: 'timestamptz' })
+  @CreateDateColumn()
   created_at: Date;
 
   @Exclude()
-  @UpdateDateColumn({ type: 'timestamptz' })
+  @UpdateDateColumn()
   updated_at: Date;
 }

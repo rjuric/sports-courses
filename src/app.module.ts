@@ -9,9 +9,8 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { ClassesModule } from './classes/classes.module';
 import { AuthModule } from './auth/auth.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { configuration } from './config';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from './jwt/jwt.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { InjectSenderMiddleware } from './users/middlewares/inject-sender.middleware';
@@ -19,26 +18,34 @@ import { PasswordsModule } from './passwords/passwords.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     UsersModule,
     ClassesModule,
     AuthModule,
-    ConfigModule.forRoot({
-      load: [configuration],
-      isGlobal: true,
-    }),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get<string>('database.host'),
-        port: configService.get<number>('database.port'),
-        username: configService.get<string>('database.username'),
-        password: configService.get<string>('database.password'),
-        database: configService.get<string>('database.name'),
-        entities: ['./**/*.entity.js'],
-        synchronize: true,
-      }),
-      inject: [ConfigService],
+      useFactory: (): TypeOrmModuleOptions => {
+        if (process.env.NODE_ENV !== 'test') {
+          return {
+            type: 'postgres',
+            host: process.env.DB_HOST,
+            port: parseInt(process.env.DB_PORT || '5432', 10),
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_NAME,
+            username: process.env.DB_USERNAME,
+            entities: ['**/*.entity.js'],
+            synchronize: true,
+          };
+        } else {
+          return {
+            type: 'sqlite',
+            database: 'test.db.sqlite',
+            entities: ['**/*.entity.ts'],
+            synchronize: true,
+          };
+        }
+      },
     }),
     JwtModule,
     PasswordsModule,

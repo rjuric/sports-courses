@@ -67,11 +67,11 @@ export class AuthService {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.generate(
         { email },
-        this.configService.get<string>('jwt.access.expiresIn')!,
+        this.configService.get<string>('JWT_ACCESS_EXPIRATION')!,
       ),
       this.jwtService.generate(
         { email },
-        this.configService.get<string>('jwt.refresh.expiresIn')!,
+        this.configService.get<string>('JWT_REFRESH_EXPIRATION')!,
       ),
     ]);
 

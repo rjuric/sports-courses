@@ -13,7 +13,7 @@ describe('JwtService', () => {
           provide: ConfigService,
           useValue: {
             get: jest.fn((key: string) => {
-              if (key === 'jwt.secret') {
+              if (key === 'JWT_SECRET') {
                 return 'secret';
               }
               return null;
