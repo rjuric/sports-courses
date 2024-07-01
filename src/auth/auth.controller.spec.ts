@@ -11,7 +11,7 @@ describe('AuthController', () => {
   let sut: AuthController;
   let service: jest.Mocked<AuthService>;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(AuthController).compile();
     sut = unit;
     service = unitRef.get(AuthService);
