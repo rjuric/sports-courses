@@ -29,10 +29,7 @@ import { databaseConnectionFactory } from './database-connection.factory';
     ClassesModule,
     AuthModule,
     TypeOrmModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => {
-        return databaseConnectionFactory(configService);
-      },
+      useFactory: () => databaseConnectionFactory(),
     }),
     JwtModule,
     PasswordsModule,

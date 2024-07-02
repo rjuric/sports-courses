@@ -1,11 +1,14 @@
-import { ConfigService } from '@nestjs/config';
+import { DataSource, DataSourceOptions } from 'typeorm';
+import 'dotenv/config';
+import * as process from 'node:process';
 
-export const databaseConnectionFactory = (configService: ConfigService) => {
+export const databaseConnectionFactory = () => {
   const connection = {
-    synchronize: true,
+    synchronize: false,
+    migrations: ['dist/migrations/*.js'],
   };
 
-  if (configService.get<string>('NODE_ENV') == 'test') {
+  if (process.env.NODE_ENV == 'test') {
     Object.assign(connection, {
       type: 'sqlite',
       dropSchema: true,
@@ -15,14 +18,17 @@ export const databaseConnectionFactory = (configService: ConfigService) => {
   } else {
     Object.assign(connection, {
       type: 'postgres',
-      host: configService.get<string>('DB_HOST'),
-      port: configService.get<number>('DB_PORT'),
-      password: configService.get<string>('DB_PASSWORD'),
-      database: configService.get<string>('DB_NAME'),
-      username: configService.get<string>('DB_USERNAME'),
+      host: process.env.DB_HOST,
+      port: parseInt(process.env.DB_PORT || '5432', 10),
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      username: process.env.DB_USERNAME,
       entities: ['**/*.entity.js'],
     });
   }
 
   return connection;
 };
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+export default new DataSource(databaseConnectionFactory() as DataSourceOptions);

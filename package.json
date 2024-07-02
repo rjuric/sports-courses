@@ -17,7 +17,12 @@
     "test:watch": "export NODE_ENV=test; jest --watch",
     "test:cov": "export NODE_ENV=test; jest --coverage",
     "test:debug": "export NODE_ENV=test; node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "export NODE_ENV=test; jest --config ./test/jest-e2e.json --maxWorkers=1"
+    "test:e2e": "export NODE_ENV=test; jest --config ./test/jest-e2e.json --maxWorkers=1",
+    "typeorm": "typeorm-ts-node-commonjs",
+    "migration:run": "npm run typeorm migration:run -- -d ./src/database-connection.factory.ts",
+    "migration:generate": "export NODE_ENV=development; npm run typeorm -- -d ./src/database-connection.factory.ts migration:generate",
+    "migration:create": "npm run typeorm -- migration:create",
+    "migration:revert": "npm run typeorm -- -d ./src/database-connection.factory.ts migration:revert"
   },
   "dependencies": {
     "@nestjs/cli": "^10.0.0",
