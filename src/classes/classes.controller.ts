@@ -87,7 +87,6 @@ export class ClassesController {
   @ApiUnauthorizedResponse({ description: 'Access token is invalid.' })
   @ApiForbiddenResponse({ description: 'Sender is not ADMIN.' })
   @ApiCreatedResponse({ type: Class })
-  @ApiNotFoundResponse({ description: 'No class found.' })
   @Roles(Role.ADMIN)
   @Post()
   create(@Body() createClassDto: CreateClassDto) {

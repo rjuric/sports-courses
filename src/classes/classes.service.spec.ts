@@ -2,10 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ClassesService } from './classes.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Class } from './entities/class.entity';
-import { FindManyOptions, In, Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CreateClassDto, CreateClassScheduleDto } from './dto/create-class.dto';
 import { DayOfWeek } from '../util/enums/day-of.week';
-import { Role } from '../util/enums/role';
 
 const footballDto = new CreateClassDto(
   'football',
