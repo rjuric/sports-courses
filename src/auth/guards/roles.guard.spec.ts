@@ -1,7 +1,11 @@
 import { RolesGuard } from './roles.guard';
 import { AuthenticatedRequest } from '../../util/interfaces/authenticated-request.interface';
 import { User } from '../../users/entities/user.entity';
-import { ExecutionContext } from '@nestjs/common';
+import {
+  ExecutionContext,
+  ForbiddenException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Role } from '../../util/enums/role';
 
 interface GuardContext {
@@ -28,12 +32,12 @@ describe('RolesGuard', () => {
   describe('no roles', () => {
     const guard = new RolesGuard([]);
 
-    it('canActivate false when user is null', () => {
+    it('canActivate throws 401 when user is null', () => {
       const context = getContext(null);
 
-      const result = guard.canActivate(context as ExecutionContext);
-
-      expect(result).toStrictEqual(false);
+      expect(async () => {
+        guard.canActivate(context as ExecutionContext);
+      }).rejects.toThrow(UnauthorizedException);
     });
 
     it('canActivate true when user is present', () => {
@@ -42,14 +46,6 @@ describe('RolesGuard', () => {
       const result = guard.canActivate(context as ExecutionContext);
 
       expect(result).toStrictEqual(true);
-    });
-
-    it('canActivate false when user is null', () => {
-      const context = getContext(null);
-
-      const result = guard.canActivate(context as ExecutionContext);
-
-      expect(result).toStrictEqual(false);
     });
 
     it('canActivate true when user is present with roles', () => {
@@ -66,22 +62,22 @@ describe('RolesGuard', () => {
   describe('single role', () => {
     const guard = new RolesGuard([Role.ADMIN]);
 
-    it('canActivate false when user is null', () => {
+    it('canActivate throws 401 when user is null', () => {
       const context = getContext(null);
 
-      const result = guard.canActivate(context as ExecutionContext);
-
-      expect(result).toStrictEqual(false);
+      expect(async () => {
+        guard.canActivate(context as ExecutionContext);
+      }).rejects.toThrow(UnauthorizedException);
     });
 
-    it('canActivate false when user does not have specified role', () => {
+    it('canActivate throws 403 when user does not have specified role', () => {
       const context = getContext(
         new User('test@tests.com', 'test', undefined, [Role.USER]),
       );
 
-      const result = guard.canActivate(context as ExecutionContext);
-
-      expect(result).toStrictEqual(false);
+      expect(async () => {
+        guard.canActivate(context as ExecutionContext);
+      }).rejects.toThrow(ForbiddenException);
     });
 
     it('canActivate true when and user has specified role', () => {
@@ -108,12 +104,12 @@ describe('RolesGuard', () => {
   describe('multiple roles', () => {
     const guard = new RolesGuard([Role.USER, Role.ADMIN]);
 
-    it('canActivate false when user is null', () => {
+    it('canActivate throws 401 when user is null', () => {
       const context = getContext(null);
 
-      const result = guard.canActivate(context as ExecutionContext);
-
-      expect(result).toStrictEqual(false);
+      expect(async () => {
+        guard.canActivate(context as ExecutionContext);
+      }).rejects.toThrow(UnauthorizedException);
     });
 
     it('canActivate true when user has one of the roles', () => {
