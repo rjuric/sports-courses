@@ -50,4 +50,4 @@ You have your standard options here. Choose wisely!
 ```
 
 ## Manual testing
-The Postman collection can be found [here](https://github.com/rjuric/sports-courses-postman/blob/main/README.md).
+The Postman collection can be found [here](https://github.com/rjuric/sports-courses-postman).
