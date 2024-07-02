@@ -4,7 +4,6 @@ import * as process from 'node:process';
 
 export const databaseConnectionFactory = () => {
   const connection = {
-    synchronize: false,
     migrations: ['dist/migrations/*.js'],
   };
 
@@ -12,6 +11,7 @@ export const databaseConnectionFactory = () => {
     Object.assign(connection, {
       type: 'sqlite',
       dropSchema: true,
+      synchronize: true,
       database: 'test.db.sqlite',
       entities: ['**/*.entity.ts'],
     });
@@ -23,6 +23,7 @@ export const databaseConnectionFactory = () => {
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       username: process.env.DB_USERNAME,
+      synchronize: false,
       entities: ['**/*.entity.js'],
     });
   }
